@@ -20,7 +20,10 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import type { FormInstance } from 'element-plus'
+import axios, { AxiosResponse } from 'axios'
+import {useRouter} from 'vue-router'
 
+const router = useRouter()
 let loginForm = reactive({
   username: '',
   password: '',
@@ -35,15 +38,25 @@ let loginRules = reactive({
 })
 const loginFormRef = ref<FormInstance>()
 
+declare module 'axios' {
+  interface AxiosInstance {
+    (config: AxiosRequestConfig): Promise<any>
+  }
+}
+
 const login = (formEl: FormInstance | undefined) => {
   if (formEl) {
     formEl.validate((valid) => {
       if (valid) {
         // 登录逻辑, 调用登录成功接口
-        console.log('登录成功');
+        axios.post('/api/login', loginForm).then((res) => {
+          if (res.code === 0) {
+            console.log('login success')
+            router.push('/books')
+          }
+        })
       } else {
-        // 登录失败, 调用登录失败接口
-        console.log('登录失败');
+        console.log('校验失败');
         return false;
       }
     })

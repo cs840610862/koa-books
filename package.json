@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "axios": "^1.4.0",
     "element-plus": "^2.3.7",
     "koa": "^2.14.2",
     "koa-bodyparser": "^4.4.1",
