@@ -1,0 +1,108 @@
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif, SimHei, SimSun;
+
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	min-width: 320px;
+	background: #FFFFFF;
+	font-size: 14px;
+	line-height: 1.4285em;
+	color: #000000de;
+	display: flex;
+}
+
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+#app {
+	display: flex;
+	flex-grow: 1;
+}
+
+a,
+a:focus,
+a:hover {
+	color: inherit;
+	outline: none;
+	text-decoration: none;
+}
+
+.el-menu-item.is-active {
+	background-color: #ecf5ff;
+}
+
+
+.flex {
+	display: flex;
+	display: -webkit-flex;
+}
+
+.flex_vbox {
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: column;
+}
+
+.flex_hbox {
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;
+}
+
+.flex_grow {
+	flex-grow: 1;
+}
+
+.flex_child_center {
+	align-items: center;
+	justify-content: center;
+}
+
+.flex_self_center {
+	align-self: center;
+}
+
+.fill_height {
+	height: 100%;
+}
+
+.fill_width {
+	width: 100%;
+}
+
+
+.color_blue {
+	color: rgb(255, 208, 0);
+}
+
+.color_red {
+	color: red;
+}
+
+.color_green {
+	color: rgb(0, 148, 0);
+}
+
+
+.breadcrumb {
+	align-items: center;
+	height: 50px;
+	padding-left: 8px;
+}
