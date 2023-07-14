@@ -1,6 +1,8 @@
 // https://juejin.cn/post/6844903685164646413?searchId=202307122110094EFF43F01097251190CD#heading-6
 import KoaRouter from 'koa-router'
 import { MongoClient, ObjectId } from 'mongodb'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
 
 const client = await MongoClient.connect('mongodb://localhost:27017');
 const db = client.db("book");
@@ -8,10 +10,6 @@ const db = client.db("book");
 const router = new KoaRouter({
   prefix: '/api'
 })
-
-const users = {
-  "admin": "admin"
-}
 
 router.get('/', async (ctx, next) => {
   // todo
@@ -72,7 +70,7 @@ router.post('/mongo', async (ctx, next) => {
 router.post('/login', async (ctx, next) => {
   let res = 'login'
   const reqBody = ctx.request.body
-  console.log(reqBody)
+  console.log('1111', reqBody)
   // 参数名非空校验
   if (!reqBody.username || !reqBody.password) {
     // 没有传用户名或者密码
@@ -83,7 +81,7 @@ router.post('/login', async (ctx, next) => {
     ctx.response.body = res
     return res
   }
-  if (reqBody.username && users[reqBody.username]) {
+  if (reqBody.username) {
     const users = await db.collection('loginUsers').find({ username: reqBody.username }).toArray()
     console.log('users', users)
     if (users.length === 0) {
@@ -93,10 +91,15 @@ router.post('/login', async (ctx, next) => {
         msg: 'username or password is wrong'
       }
     } else if (users.length === 1) {
-      if (users[0].password === reqBody.password) {
+      // 验证密码
+      // 哈希加密密码
+      if (await bcrypt.compare(reqBody.password, users[0].password)) {
         // 登录成功
+        let payload = { username: reqBody.username, time: new Date().getTime(), timeout: 1000 * 60 * 60 * 2 }
+        let token = jwt.sign(payload, "screct")
         res = {
           code: 0,
+          token: token,
           msg: 'login success'
         }
       } else {
@@ -132,7 +135,7 @@ router.post('/register', async (ctx, next) => {
     return res
   }
   const userLogin = db.collection('loginUsers')
-  // 用户存在判断
+  // 用户是否存在判断
   const users = await userLogin.find({ username: reqBody.username }).toArray()
   if (users.length > 0) {
     // 用户名已存在
@@ -141,10 +144,13 @@ router.post('/register', async (ctx, next) => {
       msg: 'username is exist'
     }
   } else {
+    // 哈希加密密码
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(reqBody.password, salt);
     // 写入到登录用户表
     userLogin.insertOne({
       username: reqBody.username,
-      password: reqBody.password
+      password: passwordHash
     })
     res = {
       code: 0,

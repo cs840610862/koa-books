@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import './style.scss'
+import installAxios from './utils/axiosIntercept.ts'
 
 export let menus = [
 	{ 
@@ -53,6 +54,7 @@ import App from './App.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 let app = createApp(App)
+installAxios(app)
 app.use(router)
 app.use(ElementPlus)
 app.mount('#app')

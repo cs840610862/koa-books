@@ -18,15 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref, getCurrentInstance } from 'vue';
 import type { FormInstance } from 'element-plus'
-import axios, { AxiosResponse } from 'axios'
 import {useRouter} from 'vue-router'
 
+const axiosInstance = getCurrentInstance()?.appContext.config.globalProperties.$axios;
 const router = useRouter()
 let loginForm = reactive({
-  username: '',
-  password: '',
+  username: 'admin',
+  password: 'admin',
 })
 let loginRules = reactive({
   username: [
@@ -38,20 +38,15 @@ let loginRules = reactive({
 })
 const loginFormRef = ref<FormInstance>()
 
-declare module 'axios' {
-  interface AxiosInstance {
-    (config: AxiosRequestConfig): Promise<any>
-  }
-}
-
 const login = (formEl: FormInstance | undefined) => {
   if (formEl) {
     formEl.validate((valid) => {
       if (valid) {
         // 登录逻辑, 调用登录成功接口
-        axios.post('/api/login', loginForm).then((res) => {
-          if (res.code === 0) {
+        axiosInstance?.post('/api/login', loginForm).then(({ data }) => {
+          if (data.code === 0) {
             console.log('login success')
+            localStorage.setItem('token', data.token)
             router.push('/books')
           }
         })

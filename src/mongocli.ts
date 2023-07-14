@@ -1,22 +1,10 @@
+import { instance } from '@/utils/axiosIntercept'
+
 function POST(url: string, send: any): Promise<[any, any]> {
-    return new Promise((res, rej) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                const data = JSON.parse(xhr.responseText);
-                res([data, null])
-            }
-        };
-
-        xhr.onerror = function (e) {
-            rej([null, e])
-        };
-
-        xhr.send(JSON.stringify(send));
-    })
+    return instance.post(url, send)
+        .then(res => {
+            return [res.data, null]
+        })
 }
 
 export class WebCollection {
@@ -31,18 +19,18 @@ export class WebCollection {
     deleteOne(query: any): Promise<[any, any]> { return this.exec("deleteOne", query) }
     countDocuments(query: any): Promise<[any, any]> { return this.exec("countDocuments", query) }
 
-    async findAll() : Promise<[any,any]> {
+    async findAll(): Promise<[any, any]> {
         let [list, err] = await this.execWith({
             collection: this.name,
             method: "findMany",
             args: {},
-        }) 
+        })
         if (err) {
             return [null, err]
         }
-        return [{list:list}, null]
+        return [{ list: list }, null]
     }
-    
+
     async findMany(pageNum: number, pageSize: number, query: any): Promise<[any, any]> {
         let [list, err] = await this.execWith({
             collection: this.name,
