@@ -9,7 +9,9 @@ async function check(ctx, next) {
         await next()
     } else {
         //获取到token
-        const token = ctx.request.headers["token"]
+        let token = ctx.request.headers["token"]
+        token = token === 'undefined' ? '' : token
+        console.log('token', token)
         if (!token) {
             ctx.body = {
                 code: -1,

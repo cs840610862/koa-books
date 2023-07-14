@@ -10,6 +10,7 @@
           <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item>
+          <el-button type="primary" @click="register(loginFormRef)">注册</el-button>
           <el-button type="primary" @click="login(loginFormRef)">登录</el-button>
         </el-form-item>
       </el-form>
@@ -18,8 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, getCurrentInstance } from 'vue';
+import { reactive, ref, getCurrentInstance } from 'vue'
 import type { FormInstance } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import {useRouter} from 'vue-router'
 
 const axiosInstance = getCurrentInstance()?.appContext.config.globalProperties.$axios;
@@ -48,6 +50,25 @@ const login = (formEl: FormInstance | undefined) => {
             console.log('login success')
             localStorage.setItem('token', data.token)
             router.push('/books')
+          }
+        })
+      } else {
+        console.log('校验失败');
+        return false;
+      }
+    })
+  }
+}
+const register = (formEl: FormInstance | undefined) => {
+  if (formEl) {
+    formEl.validate((valid) => {
+      if (valid) {
+        // 登录逻辑, 调用登录成功接口
+        axiosInstance?.post('/api/register', loginForm).then(({ data }) => {
+          if (data.code === 0) {
+            localStorage.setItem('token', data.token)
+            console.log('register success')
+            ElMessage.success('注册成功, 立即登录吧!')
           }
         })
       } else {

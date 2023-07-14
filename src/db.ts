@@ -36,7 +36,7 @@ export var books_define = reactive(<DF>{
 export var users_define = reactive(<DF>{
     db: db.users,
     format: [
-        add("name", "用户名"),
+        add("username", "用户名"),
         add("phone", "电话"),
         add("addr", "住址"),
     ]

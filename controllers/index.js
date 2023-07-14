@@ -82,7 +82,7 @@ router.post('/login', async (ctx, next) => {
     return res
   }
   if (reqBody.username) {
-    const users = await db.collection('loginUsers').find({ username: reqBody.username }).toArray()
+    const users = await db.collection('users').find({ username: reqBody.username }).toArray()
     console.log('users', users)
     if (users.length === 0) {
       // 用户名不存在, 提示用户名或密码不正确
@@ -134,7 +134,7 @@ router.post('/register', async (ctx, next) => {
     ctx.response.body = res
     return res
   }
-  const userLogin = db.collection('loginUsers')
+  const userLogin = db.collection('users')
   // 用户是否存在判断
   const users = await userLogin.find({ username: reqBody.username }).toArray()
   if (users.length > 0) {
@@ -150,7 +150,9 @@ router.post('/register', async (ctx, next) => {
     // 写入到登录用户表
     userLogin.insertOne({
       username: reqBody.username,
-      password: passwordHash
+      password: passwordHash,
+      phone: '',
+      addr: ''
     })
     res = {
       code: 0,
